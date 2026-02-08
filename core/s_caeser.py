@@ -6,18 +6,8 @@ C = [1, -1, 1, 2, -2, 1, 1, 3, -1, 2]
 
 class SCaeser:
     @staticmethod
-    def encode(text_to_encode: str, secret_key: str) -> str:
-        """
-        Функиця для кодировки шифром Цезаря
-
-        :param message_in: Текст для кодировки (длина = 4)
-        :type message_in: str
-        :param key_in: Ключ для шфирования (длина = 16)
-        :type key_in: str
-        :return: Зашифрованное сообщение
-        :rtype: str
-        """
-        encoded_str = text_to_encode
+    def encrypt(text_to_encrypt: str, secret_key: str) -> str:
+        encoded_str = text_to_encrypt
         key_tmp = "___"
         extended_key = secret_key * 2
 
@@ -32,23 +22,13 @@ class SCaeser:
 
             key_tmp = add_txt(key_tmp, ascii_to_text(a_tmp))
 
-        encoded_str = PolyCaeser.encode(text_to_encode, key_tmp)
+        encoded_str = PolyCaeser.encrypt(text_to_encrypt, key_tmp)
 
         return encoded_str
 
     @staticmethod
-    def decode(text_to_decode: str, secret_key: str) -> str:
-        """
-        Docstring for decode
-
-        :param text_to_decode: Description
-        :type text_to_decode: str
-        :param secret_key: Description
-        :type secret_key: str
-        :return: Description
-        :rtype: str
-        """
-        decoded_str = text_to_decode
+    def decrypt(text_to_decrypt: str, secret_key: str) -> str:
+        decoded_str = text_to_decrypt
         key_tmp = "___"
         extended_key = secret_key * 2
 
@@ -63,6 +43,6 @@ class SCaeser:
 
             key_tmp = add_txt(key_tmp, ascii_to_text(a_tmp))
 
-        decoded_str = PolyCaeser.decode(decoded_str, key_tmp)
+        decoded_str = PolyCaeser.decrypt(decoded_str, key_tmp)
 
         return decoded_str
