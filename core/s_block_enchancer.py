@@ -3,7 +3,7 @@ from utils import text_to_ascii, ascii_to_text
 
 class SBlockEnchanser:
     @staticmethod
-    def merge_block(block: str, key: str):
+    def merge_block(block: str, key: str) -> str:
         M = [0, 1, 2, 3]
         key_array = text_to_ascii(key)
         _sum = 0
@@ -26,7 +26,7 @@ class SBlockEnchanser:
         return ascii_to_text(block_array)
 
     @staticmethod
-    def inverse_merge_block(block: str, key: str):
+    def inverse_merge_block(block: str, key: str) -> str:
         M = [0, 1, 2, 3]
         key_array = text_to_ascii(key)
         _sum = 0
