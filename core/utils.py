@@ -130,3 +130,11 @@ def num_to_block(num_in: int) -> str:
         tmp[3 - i] = rem % 32
         rem = rem // 32
     return ascii_to_text(tmp)
+
+
+def dec_to_bin(num_in: int) -> list[int]:
+    return [int(bit) for bit in bin(num_in)[2:].zfill(20)]
+
+
+def bin_to_dec(num_in: str) -> int:
+    return int(num_in, 2)
