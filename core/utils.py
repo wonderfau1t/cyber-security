@@ -188,8 +188,47 @@ def bin_to_dec(num_in: list[int]) -> int:
     tmp = "".join(tmp)
     return int(tmp, 2)
 
+
 def seed_to_nums(array_in: list):
     result = []
     for item in array_in:
         result.append(block_to_num(item))
     return result
+
+
+def compose_num(num1_in, num2_in, cont_in) -> int:
+    arr1 = dec_to_bin(num1_in)
+    arr2 = dec_to_bin(num2_in)
+    arr3 = dec_to_bin(cont_in)
+    result = []
+    for i in range(20):
+        result.append((arr1[i] * arr3[i]) + (arr2[i] * ((1 + arr3[i]) % 2)))
+    return bin_to_dec(result)
+
+
+def subblocks_xor(blocka_in, blockb_in):
+    dec_a = block_to_num(blocka_in)
+    dec_b = block_to_num(blockb_in)
+    bin_a = dec_to_bin(dec_a)
+    bin_b = dec_to_bin(dec_b)
+    result = []
+    for i in range(len(bin_a)):
+        result.append((bin_a[i] + bin_b[i]) % 2)
+    dec_o = bin_to_dec(result)
+    return num_to_block(dec_o)
+
+
+def block_xor(blocka_in, blockb_in):
+    nb = len(blocka_in) // 4
+    result = ""
+    for i in range(nb):
+        tmp_a = blocka_in[i * 4 : i * 4 + 4]
+        tmp_b = blockb_in[i * 4 : i * 4 + 4]
+        result += subblocks_xor(tmp_a, tmp_b)
+    return result
+
+
+def swap_blocks(block_in):
+    left = block_in[:8]
+    right = block_in[8 : 8 + 8]
+    return right + left
