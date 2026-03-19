@@ -60,7 +60,7 @@ def frw(block_in, keys_in, r_in):
     key_set = keys_in
     block = block_xor(block_in, key_set[0])
     for i in range(1, r_in + 1):
-        block = round(block, key_set[1])
+        block = round(block, key_set[i])
     return block_xor(block, key_set[r_in + 1])
 
 
@@ -69,6 +69,6 @@ def inv(block_in, keys_in, r_in):
     block = block_xor(block_in, key_set[r_in + 1])
     block = swap_blocks(block)
     for i in range(r_in, 0, -1):
-        block = round(block, key_set[1])
+        block = round(block, key_set[i])
     block = swap_blocks(block)
     return block_xor(block, key_set[0])
