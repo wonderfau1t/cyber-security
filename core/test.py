@@ -98,44 +98,54 @@ def strict_avalanche_test(blocks_count=100, rounds=1, plot=True):
     
     return sum_j
 
-# ---------------------------
-# 2. Генеративный дифференциальный тест
-# ---------------------------
-def num_to_block_fixed(num, length=16):
-    s = num_to_block(num)
-    if len(s) < length:
-        s = '_' * (length - len(s)) + s
-    return s[:length]
+def random_block(length=16):
+    """Генерирует случайный блок из length символов (80 бит)."""
+    alphabet = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯ_"
+    return ''.join(random.choices(alphabet, k=length))
 
 def generative_differential_test(length=1000, rounds=6, plot=True):
-    X0 = random.randint(0, 2**20 - 1)
-    Y0 = random.randint(0, 2**20 - 1)
+    # Начальные блоки (связанные цепочки)
+    X_chain = [random_block()]
+    Y_chain = [random_block()]
     
-    X_chain = [X0]
-    Y_chain = [Y0]
-    for _ in range(length - 1):
-        X_chain.append((X_chain[-1] + 1) % 2**20)
-        Y_chain.append((Y_chain[-1] + 1) % 2**20)
-
+    # Строим цепочки блоков, каждый следующий блок слегка отличается от предыдущего
+    for i in range(1, length):
+        # Можно просто изменять один случайный символ предыдущего блока
+        prev_x = list(X_chain[-1])
+        prev_y = list(Y_chain[-1])
+        
+        idx_x = random.randint(0, 15)
+        idx_y = random.randint(0, 15)
+        
+        alphabet = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯ_"
+        prev_x[idx_x] = random.choice(alphabet)
+        prev_y[idx_y] = random.choice(alphabet)
+        
+        X_chain.append(''.join(prev_x))
+        Y_chain.append(''.join(prev_y))
+    
     di = []
     
-    for i in range(length):
-        xi = X_chain[i]
-        yi = Y_chain[i]
+    for xi, yi in zip(X_chain, Y_chain):
+        # C[Xi], C[Yi] и C[Xi+Yi] (для блока Xi+Yi используем посимвольное суммирование по модулю длины алфавита)
+        c_xi = frw(xi, round_keys, rounds)
+        c_yi = frw(yi, round_keys, rounds)
         
-        xi_block = num_to_block_fixed(xi)
-        yi_block = num_to_block_fixed(yi)
-        sum_block = num_to_block_fixed((xi + yi) % 2**20)
-        
-        c_xi = frw(xi_block, round_keys, rounds)
-        c_yi = frw(yi_block, round_keys, rounds)
+        # Суммируем блоки по модулю длины алфавита, чтобы получить "Xi + Yi"
+        sum_block = ''.join(
+            alphabet[(alphabet.index(xi[j]) + alphabet.index(yi[j])) % len(alphabet)]
+            for j in range(len(xi))
+        )
         c_sum = frw(sum_block, round_keys, rounds)
         
+        # Переводим в битовые строки
         bits_xi = ''.join(format(block_to_num(c_xi[j*4:(j+1)*4]), "020b") for j in range(4))
         bits_yi = ''.join(format(block_to_num(c_yi[j*4:(j+1)*4]), "020b") for j in range(4))
         bits_sum = ''.join(format(block_to_num(c_sum[j*4:(j+1)*4]), "020b") for j in range(4))
         
+        # Qi = C[Xi] XOR C[Yi]
         bits_qi = ''.join('1' if bits_xi[k] != bits_yi[k] else '0' for k in range(len(bits_xi)))
+        # Расстояние Хэмминга между Qi и Oi
         hamming = sum(bits_qi[k] != bits_sum[k] for k in range(len(bits_qi)))
         di.append(hamming)
     
