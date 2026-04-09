@@ -232,3 +232,91 @@ def swap_blocks(block_in):
     left = block_in[:8]
     right = block_in[8 : 8 + 8]
     return right + left
+
+
+def reverse_str(s: str) -> str:
+    return s[::-1]
+
+
+def pad_MD(IN: str) -> str:
+    result = IN
+    rem = 64 - len(IN) % 64
+    if rem != 64:
+        for i in range(rem):
+            result += "_"
+    return result
+
+
+def is_sym(s_in: str) -> int:
+    return True if s_in in alphabet_to_ascii else False
+
+
+def sym2bin(s_in: str) -> int:
+    return ord(s_in) - 48
+
+
+def msg2bin(msg_in: str) -> list:
+    tmp = []
+    i = 0
+    M = len(msg_in)
+
+    while i < M:
+        ch = msg_in[i]
+        if ch in alphabet_to_ascii:
+            c = symbol_to_ascii(ch)
+            for j in range(4, -1, -1):
+                tmp.append((c >> j) & 1)
+            i += 1
+        else:
+            if ch == "0" or ch == "1":
+                tmp.append(int(ch))
+                i += 1
+            else:
+                i += 1
+
+    return tmp
+
+
+# print(msg2bin("ГНОЛЛЫ_ПИЛИЛИ_ПЫЛЕСОС_ЛОСОСЕМ"))
+# print(len(msg2bin("ГНОЛЛЫ_ПИЛИЛИ_ПЫЛЕСОС_ЛОСОСЕМ")))
+
+
+def bin2msg(bin_in: list) -> str:
+    if not bin_in:
+        return ""
+
+    out = ""
+    i = 0
+    B = len(bin_in)
+
+    while i < B:
+        if i + 5 <= B:
+            t = 0
+            for _ in range(5):
+                t = (t << 1) | bin_in[i]
+                i += 1
+
+            if 0 <= t <= 32:
+                out += ascii_to_symbol(t)
+            else:
+                i -= 5
+                break
+        else:
+            break
+
+    while i < B:
+        out += str(bin_in[i])
+        i += 1
+
+    return out
+
+
+# print(bin2msg(msg2bin("ГНОЛЛЫ_ПИЛИЛИ_ПЫЛЕСОС_ЛОСОСЕМ00111")))
+
+
+def block2bin(block_in):
+    return dec_to_bin(block_to_num(block_in))
+
+
+def bin2block(bin_in):
+    return num_to_block(bin_to_dec(bin_in))

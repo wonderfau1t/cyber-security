@@ -1,7 +1,7 @@
 from typing import Literal
 
-from core_caeser import core_caesar
-from utils import add_txt, compress, confuse, mixinputs
+from core.core_caeser import core_caesar
+from core.utils import add_txt, compress, confuse, mixinputs
 
 
 def c_block(in_arr: list[str], out_size: Literal[16, 8, 4]) -> str:

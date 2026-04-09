@@ -1,4 +1,4 @@
-from utils import ascii_to_text, text_to_ascii
+from core.utils import ascii_to_text, text_to_ascii
 
 
 def core_caesar(in_prime, in_aux) -> str:

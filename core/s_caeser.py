@@ -1,5 +1,5 @@
-from poly_caeser import PolyCaeser
-from utils import add_txt, ascii_to_text, text_to_ascii
+from core.poly_caeser import PolyCaeser
+from core.utils import add_txt, ascii_to_text, text_to_ascii
 
 C = [1, -1, 1, 2, -2, 1, 1, 3, -1, 2]
 

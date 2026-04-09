@@ -1,4 +1,4 @@
-from lcg_class import LCG
+from core.lcg_class import LCG
 
 
 def produce_round_keys(key_in, num_in):

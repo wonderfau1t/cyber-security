@@ -1,5 +1,5 @@
-from s_block_enchancer import SBlockEnchanser
-from s_caeser import SCaeser
+from core.s_block_enchancer import SBlockEnchanser
+from core.s_caeser import SCaeser
 
 
 class SCaeserMod:

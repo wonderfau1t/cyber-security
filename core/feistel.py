@@ -1,6 +1,6 @@
-from p_scitala import frw_P_scitala, inv_P_scitala
-from s_caeser_mod import SCaeserMod
-from utils import add_txt, block_xor, sub_txt, swap_blocks
+from core.p_scitala import frw_P_scitala, inv_P_scitala
+from core.s_caeser_mod import SCaeserMod
+from core.utils import add_txt, bin2block, block2bin, block_xor, sub_txt, swap_blocks
 
 
 def frw_routine(block_in: str, key_in: str):
@@ -25,11 +25,30 @@ def inv_routine(block_in: str, key_in: str):
 # print(inv_routine("СВЕТНДОЬ", "ЗОЛОТУХА_ПИКЕТКА"))
 
 
+def bit_swap(block_in):
+    b = block2bin(block_in[:4])
+    for i in range(10):
+        t = b[2 * i]
+        b[2 * i] = b[2 * i + 1]
+        b[2 * i + 1] = t
+    return bin2block(b) + block_in[4 : 4 + 4]
+
+
+def bit_shift(block_in):
+    b = block2bin(block_in[:4])
+    t = b[19]
+    for i in range(19, 0, -1):
+        b[i] = b[i - 1]
+    b[0] = t
+    return bin2block(b) + block_in[4:8]
+
+
 def frw_inner(block_in, key_in, r_in):
-    tmp = frw_P_scitala(block_in)
+    tmp = bit_swap(frw_P_scitala(block_in))
     for i in range(r_in):
         tmp = frw_routine(tmp, key_in)
-    return frw_P_scitala(tmp)
+        tmp = bit_shift(tmp)
+    return frw_P_scitala(bit_swap(tmp))
 
 
 # print(frw_inner("ГОР_СВЕТ", "ЗОЛОТУХА_ПИКЕТКА", 2))
@@ -48,7 +67,7 @@ def inv_inner(block_in, key_in, r_in):
 def round(block_in, key_in):
     left = block_in[:8]
     right = block_in[8 : 8 + 8]
-    tmp = frw_inner(right, key_in, 3)
+    tmp = frw_inner(right, key_in, 2)
     left = block_xor(tmp, left)
     return right + left
 

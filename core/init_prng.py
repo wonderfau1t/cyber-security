@@ -1,5 +1,5 @@
-from c_block import c_block
-from utils import add_txt
+from core.c_block import c_block
+from core.utils import add_txt
 
 
 def init_prng(seed: str) -> list[str]:

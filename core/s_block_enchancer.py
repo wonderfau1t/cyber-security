@@ -1,4 +1,4 @@
-from utils import text_to_ascii, ascii_to_text
+from core.utils import text_to_ascii, ascii_to_text
 
 
 class SBlockEnchanser:

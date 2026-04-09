@@ -1,5 +1,5 @@
-from init_prng import init_prng
-from utils import compose_num, num_to_block, seed_to_nums
+from core.init_prng import init_prng
+from core.utils import compose_num, num_to_block, seed_to_nums
 
 
 class LCG:
